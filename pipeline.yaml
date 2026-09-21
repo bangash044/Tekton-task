@@ -3,9 +3,12 @@ kind: Pipeline
 metadata:
 name: tax-calculator-pipeline
 spec:
+description: Pipeline for installing dependencies, running Jasmine tests, and building the Tax Calculator image.
+
 params:
 - name: image
 type: string
+description: Full IBM Cloud Container Registry image name.
 
 workspaces:
 - name: source
