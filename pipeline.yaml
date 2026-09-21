@@ -1,31 +1,40 @@
-apiVersion: tekton.dev/v1
+apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: tax-calculator-pipeline
 spec:
-  params:
-    - name: IMAGE
-      type: string
-
   workspaces:
     - name: source
 
+  params:
+    - name: image
+      type: string
+
   tasks:
-    - name: run-tests
+    - name: npminstall
       taskRef:
-        name: run-tests
+        name: npminstall
       workspaces:
         - name: source
           workspace: source
 
-    - name: build-image
+    - name: tests
       runAfter:
-        - run-tests
+        - npminstall
+      taskRef:
+        name: tests
+      workspaces:
+        - name: source
+          workspace: source
+
+    - name: build
+      runAfter:
+        - tests
       taskRef:
         name: build-image
       params:
         - name: IMAGE
-          value: $(params.IMAGE)
+          value: $(params.image)
       workspaces:
         - name: source
           workspace: source
